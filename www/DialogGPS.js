@@ -2,9 +2,9 @@ cordova.define("cl.rmd.cordova.dialoggps.DialogGPS", function(require, exports, 
 /*global window, jQuery, angular, cordova */
 "use strict";
 
-var getPromiseOrCallback = function(successCallbackCallback,failCallbackCallback,command,options){
-	var toReturn=deferred=injector=$q=null;
-	if(successCallbackCallback === undefined && failCallback === undefined){
+var getPromiseOrCallback = function(successCallback,failCallback,command,options){
+	var toReturn=null,deferred=null,injector=null,$q=null;
+	if(successCallback === undefined && failCallback === undefined){
 		//construccion de promesas en caso de no ingresar callbacks
 		if(window.jQuery){
 			deferred = jQuery.Deferred();
@@ -36,22 +36,20 @@ var getPromiseOrCallback = function(successCallbackCallback,failCallbackCallback
 	
 }
 
-var DialogGPS = {
-		gpsActive : function(successCallback,failCallback){
-			return getPromiseOrCallback(successCallback,failCallback,'gpsActive',[]);
-			
-		},
-		this:function(successCallback,failCallback,options){
-			//receive {title:[string],message:[string],buttons:[array]}
-			return getPromiseOrCallback(successCallback,failCallback,'show',[{
-				title:options.title,
-				message:options.message,
-				buttons:options.buttons
-			}]);
-		}
+var DialogGPS = function(successCallback,failCallback,options){
+	//receive {title:[string],message:[string],buttons:[array]}
+	return getPromiseOrCallback(successCallback,failCallback,'show',[{
+		title:options.title,
+		message:options.message,
+		buttons:options.buttons
+	}]);
+};
 		
-		};
-
+DialogGPS.gpsActive = function(successCallback,failCallback){
+			return getPromiseOrCallback(successCallback,failCallback,'gpsActive',[]);
 }
+		
+
 
 module.exports = DialogGPS;
+});
