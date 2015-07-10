@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
+           id="cl.rmd.cordova.dialoggps"
+      version="0.0.0">
+    <name>DialogGPS</name>
+    <description>Plugin for phonegap to display a dialog to redirect to gps settings when gps are disabled.</description>
+    <license>MIT</license>
+    <keywords>phonegap,dialog,gps,dialogGPS</keywords>
+ 
+ 
+    <js-module src="www/DialogGPS.js" name="DialogGPS">
+        <clobbers target="cordova.DialogGPS" />
+    </js-module>
+ 
+    <!-- android -->
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="DialogGPS">
+                <param name="android-package" value="cl.rmd.cordova.DialogGPS"/>
+            </feature>
+        </config-file>
+ 
+        <source-file src="src/android/DialogGPS.java" target-dir="src/cl/rmd/cordova/dialoggps" />      
+     </platform>          
+</plugin>
