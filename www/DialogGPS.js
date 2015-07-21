@@ -2,9 +2,9 @@ cordova.define("cl.rmd.cordova.dialoggps.DialogGPS", function(require, exports, 
 /*global window, jQuery, angular, cordova */
 "use strict";
 
-var getPromiseOrCallback = function(successCallback,failCallback,command,options){
+var getPromiseOrCallback = function(successCallback,command,options){
 	var toReturn=null,deferred=null,injector=null,$q=null;
-	if(successCallback === undefined && failCallback === undefined){
+	if(successCallback === undefined){
 		//construccion de promesas en caso de no ingresar callbacks
 		if(window.jQuery){
 			deferred = jQuery.Deferred();
@@ -19,30 +19,35 @@ var getPromiseOrCallback = function(successCallback,failCallback,command,options
 		}
 		
 		successCallback = deferred.resolve;
-		failCallback = deferred.reject;
 	}else{
 		//verificar si successCallback y failCallback son realmente funciones
-		if(typeof successCallback !== null && failCallback !== null){
-			if(typeof successCallback !== "function" && typeof failCallback !== "function"){
-				return console.error('[DialogGPS-PLUGIN] successCallback and failCallback parameters, if are defined they must be callbacks functions');
-			}
-		}else{
-			return console.error('[DialogGPS-PLUGIN] successCallback and failCallback parameters, if are defined they cannot be null');
+		if( successCallback !== null && typeof successCallback !== "function"){
+				return console.error('[DialogGPS-PLUGIN] callback  parameter, if are defined that must be callback function');
+		}else if(successCallback === null){
+			return console.error('[DialogGPS-PLUGIN] callback parameter, if are defined that cannot be null');
 		}
 	}
-	
-	cordova.exec(successCallback,failCallback,'DialogGPS',command,options);
+	cordova.exec(successCallback,null,'DialogGPS',command,options);
 	return toReturn; //retorna una promesa si es que existe si no entonces null
 	
 }
 
-var DialogGPS = function(successCallback,failCallback,options){
+var DialogGPS = function(Callback,options){
 	//receive {title:[string],message:[string],buttons:[array]}
-	return getPromiseOrCallback(successCallback,failCallback,'show',[{
-		title:options.title,
-		message:options.message,
-		buttons:options.buttons
-	}]);
+	if(options !== undefined && options !== null) {
+		if(Object.prototype.toString.call(options) === "[object Array]") {
+			if(options.length < 3){
+				options.push(['No','Yes']);
+			}
+
+			
+		}
+	}else {
+		options = ['Use Location?',
+		           'This app wants to change your device settings:\n Use GPS,Wi-Fi,and cell networks for location.\n\n',
+		           ['No','Yes']];
+	}
+	return getPromiseOrCallback(Callback,'show',options);;
 };
 		
 DialogGPS.gpsActive = function(successCallback,failCallback){
