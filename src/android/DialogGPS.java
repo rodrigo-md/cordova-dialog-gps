@@ -1,5 +1,4 @@
-package cl.rmd.cordova;
-
+package cl.rmd.cordova.dialoggps;
 
 import android.util.Log;
 import android.widget.TextView;
