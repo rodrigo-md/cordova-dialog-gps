@@ -1,4 +1,3 @@
-cordova.define("cl.rmd.cordova.dialoggps.DialogGPS", function(require, exports, module) { 
 /*global window, jQuery, angular, cordova */
 "use strict";
 
@@ -57,4 +56,3 @@ DialogGPS.gpsActive = function(successCallback,failCallback){
 
 
 module.exports = DialogGPS;
-});
