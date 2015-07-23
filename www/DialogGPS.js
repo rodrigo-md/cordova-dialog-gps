@@ -1,4 +1,5 @@
 
+
 var DialogGPS = function(message,callback,title,buttons){
 
 	var _title = (title || "Use Location?");
@@ -18,3 +19,5 @@ DialogGPS.gpsActive = function(successCallback,failCallback){
 
 
 module.exports = DialogGPS;
+
+});
