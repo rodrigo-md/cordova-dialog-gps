@@ -1,6 +1,5 @@
 package cl.rmd.cordova.dialoggps;
 
-import android.util.Log;
 import android.widget.TextView;
 
 import org.apache.cordova.CallbackContext;
@@ -20,13 +19,12 @@ import android.location.LocationManager;
 import android.provider.Settings;
 
 public class DialogGPS extends CordovaPlugin {
-	public static final String ENABLE_GPS = "Can_Enable_GPS";
 
 	@Override
 	public boolean execute(String action,JSONArray args,CallbackContext callbackContext) throws JSONException {
 
-			if(this.cordova.getActivity().isFinishing()) return true;		
-			if(action.equals("show")) {
+			if(this.cordova.getActivity().isFinishing()) return true;	
+			else if(action.equals("DISPLAY")) {
 				LocationManager  locationManager = (LocationManager) this.cordova.getActivity().getSystemService(Context.LOCATION_SERVICE);
 				boolean gpsEnable = false;
 				try {
@@ -35,8 +33,11 @@ public class DialogGPS extends CordovaPlugin {
 				
 				if(! gpsEnable) {
 					this.createDialog(args.getString(0),args.getString(1),args.getJSONArray(2),callbackContext);
+                    return true;
 				}
-			}
+			}else if (action.equals("IS_GPS_ACTIVE")) {
+
+            }
 		return false;
 	}
 
@@ -57,39 +58,64 @@ public class DialogGPS extends CordovaPlugin {
                 AlertDialog.Builder builder = newDialog(cordova); // new AlertDialog.Builder(cordova.getActivity(), AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
                 builder.setMessage(message);
                 builder.setTitle(title);
-                //builder.setCancelable(true);
+                builder.setCancelable(true);
+                String positiveButtonName = null;
 
-                if(buttonLabels.length() > 0) {
-                	try {
-                			builder.setNegativeButton(buttonLabels.getString(0),
-                        		new AlertDialog.OnClickListener() {
-                        			@Override
-                            		public void onClick(DialogInterface dialog, int which) {
-                                		dialog.dismiss();
-                                		callbackContext.success(0);;
-                            		}
-                            	});
+                if(buttonLabels.length() == 2) {
+                    try {
+                        positiveButtonName = buttonLabels.getString(1);
+                    } catch (JSONException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }else if (buttonLabels.length() == 3) {
                         
-                	}catch(JSONException e) {}
-                }
-                if(buttonLabels.length() > 1) {
-                	try {
-                			builder.setPositiveButton(buttonLabels.getString(1),
-                				new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog, int which) {
-                                        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-										cordova.getActivity().startActivity(i);
-										//dialog.dismiss();
-										callbackContext.success(1);
-									}
-								});
+                    try {
+                            positiveButtonName = buttonLabels.getString(2);
+                            builder.setNeutralButton(buttonLabels.getString(1),
+                                new AlertDialog.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int which) {
+                                        dialog.dismiss();
+                                        callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK,1));
+                                    }
+                                });
 
-                	}catch(JSONException e) {}
+                    }catch(JSONException e) {}
                 }
 
-                changeTextDirection(builder);
+                if(buttonLabels.length() == 3 || buttonLabels.length() == 2) {
+                    try {
+                            builder.setNegativeButton(buttonLabels.getString(0),
+                                new AlertDialog.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK,0));
+                                    }
+                                });
+
+                            builder.setPositiveButton(positiveButtonName,
+                                new AlertDialog.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int which) {
+                                        dialog.dismiss();
+                                        callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK,2));
+                                        cordova.getActivity().startActivity(
+                                            new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                                    }
+                                });
+
+                            builder.setOnCancelListener(new AlertDialog.OnCancelListener() {
+                                public void onCancel(DialogInterface dialog){
+                                    dialog.dismiss();
+                                    callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK,0));
+                                }
+                            });
+
+                             changeTextDirection(builder);
+                        
+                    }catch(JSONException e) {}
+                }
+
             };
         };
         this.cordova.getActivity().runOnUiThread(runnable);
