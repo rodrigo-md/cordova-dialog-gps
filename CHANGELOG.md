@@ -1,0 +1,1 @@
+* **v0.0.1**  2015-07-22   Basic plugin with support for callback and customization of text.

@@ -2,6 +2,9 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
            id="cl.rmd.cordova.dialoggps"
       version="0.0.1">
+    <engines>
+        <engine name="cordova" version=">=3.0.0" />
+    </engines>
     <name>DialogGPS</name>
     <description>Plugin for phonegap to display a dialog to redirect to gps settings when gps are disabled.</description>
     <license>MIT</license>
@@ -20,6 +23,16 @@
             </feature>
         </config-file>
  
-        <source-file src="src/android/DialogGPS.java" target-dir="src/cl/rmd/cordova/dialoggps" />      
+        <source-file src="src/android/DialogGPS.java" target-dir="src/cl/rmd/cordova/dialoggps" />
+        <source-file src="www/icon/drawable-hdpi/ic_location.png"  target-dir="res/drawable-hdpi/"/>
+        <source-file src="www/icon/drawable-mdpi/ic_location.png"  target-dir="res/drawable-mdpi/"/>
+        <source-file src="www/icon/drawable-xhdpi/ic_location.png"  target-dir="res/drawable-xhdpi/"/>
+        <source-file src="www/icon/drawable-xxhdpi/ic_location.png"  target-dir="res/drawable-xxhdpi/"/>
+        <source-file src="www/icon/drawable-xxxhdpi/ic_location.png"  target-dir="res/drawable-xxxhdpi/"/>
+
+        <config-file target="AndroidManifest.xml"    parent="/manifest">
+            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+        </config-file>
      </platform>          
 </plugin>

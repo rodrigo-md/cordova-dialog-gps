@@ -28,7 +28,7 @@ After installation , you can access the object *dialogGPS* embedded in *cordova*
   ```
 **Remember:** Remember, the object `cordova.dialogGPS` can only be accessed after the `document` is fully charged . This occurs when *deviceready* is called. Therefore it is recommended to make the call to the object within this function .
 
-If `cordova.dialogGPS()` was call without options this will be result to a default message. If you want to customize it,  you can passed an options's array to the object.
+If `cordova.dialogGPS(null)` was call without options this will be result to a default message. If you want to customize it,  you can passed an options to the constructor.
 
 ##Options
 
