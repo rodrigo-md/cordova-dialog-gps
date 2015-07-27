@@ -16,6 +16,13 @@ var DialogGPS = function(message,description,callback,title,buttons){
 		
 DialogGPS.gpsActive = function(successCallback,failCallback){
 }
+
+/* DialogGPS = {
+		show : //constructor
+		canEnableGPS:
+		isActiveGPS
+		toggleGPS
+}*/
 		
 
 

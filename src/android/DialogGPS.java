@@ -23,12 +23,13 @@ import android.location.LocationManager;
 import android.provider.Settings;
 
 public class DialogGPS extends CordovaPlugin {
+    static boolean isShown = false;
 
     @Override
     public boolean execute(String action,JSONArray args,CallbackContext callbackContext) throws JSONException {
 
             if(this.cordova.getActivity().isFinishing()) return true;   
-            else if(action.equals("DISPLAY")) {
+            else if(action.equals("DISPLAY") && !isShown) {
                 LocationManager  locationManager = (LocationManager) this.cordova.getActivity().getSystemService(Context.LOCATION_SERVICE);
                 boolean gpsEnable = false;
                 try {
@@ -39,7 +40,11 @@ public class DialogGPS extends CordovaPlugin {
                     this.createDialog(args.getString(0),args.getString(1),args.getString(2),args.getJSONArray(3),callbackContext);
                     return true;
                 }
-            }else if (action.equals("IS_GPS_ACTIVE")) {
+            }else if (action.equals("CAN_GPS_CHANGE")) {
+                //verify version of android and return flag
+            }else if (action.equals("IS_GPS_ENABLE")) {
+
+            }else if (action.equals("TOGGLE_GPS")) {
 
             }
         return false;
@@ -49,10 +54,11 @@ public class DialogGPS extends CordovaPlugin {
      *  Construct de GPS dialog with de title,message and buttons especified.
      *  When positive button is pressed then its redirection to enable GPS
      *
-     *  @param message              content of the dialog, that has display to the user.
-     *  @param title                title of the dialog
-     *  @param buttonLabels         array of labels to the positive and negative button.
-     *  @param callbackContext      callback to display the result
+     *  @param title{String}                     title of the dialog.
+     *  @param message{String}                   content of the dialog, that has display to the user.
+     *  @param description{String}               description of what was required for the app.
+     *  @param buttonLabels{JSONArray}           array of labels to the positive and negative button.
+     *  @param callbackContext{CallbackContext}  callback to display the result.
     **/
     public synchronized void createDialog(final String title, final String message,final String description,final JSONArray buttonLabels, final CallbackContext callbackContext) {
         final CordovaInterface cordova = this.cordova;
@@ -80,6 +86,7 @@ public class DialogGPS extends CordovaPlugin {
                                 new AlertDialog.OnClickListener() {
                                     public void onClick(DialogInterface dialog,int which) {
                                         dialog.dismiss();
+                                        isShown = false;
                                         callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK,1));
                                     }
                                 });
@@ -93,6 +100,7 @@ public class DialogGPS extends CordovaPlugin {
                                 new AlertDialog.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
+                                        isShown = false;
                                         callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK,0));
                                     }
                                 });
@@ -101,6 +109,7 @@ public class DialogGPS extends CordovaPlugin {
                                 new AlertDialog.OnClickListener() {
                                     public void onClick(DialogInterface dialog,int which) {
                                         dialog.dismiss();
+                                        isShown = false;
                                         callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK,2));
                                         cordova.getActivity().startActivity(
                                             new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
@@ -111,6 +120,7 @@ public class DialogGPS extends CordovaPlugin {
                             builder.setOnCancelListener(new AlertDialog.OnCancelListener() {
                                 public void onCancel(DialogInterface dialog){
                                     dialog.dismiss();
+                                    isShown = false;
                                     callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK,0));
                                 }
                             });
@@ -149,6 +159,8 @@ public class DialogGPS extends CordovaPlugin {
         builder.setMessage(message);
         builder.setTitle(title);
         
+        FrameLayout _mainLayout = new FrameLayout(context);
+
         LinearLayout _layout = new LinearLayout(context);
         LinearLayout.LayoutParams _layout_params  = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
         _layout.setLayoutParams(_layout_params);
@@ -172,7 +184,8 @@ public class DialogGPS extends CordovaPlugin {
         
         _layout.addView(_icon);
         _layout.addView(_description);
-        builder.setView(_layout);
+        _mainLayout.addView(_layout);
+        builder.setView(_mainLayout);
         
         return builder;
     }
@@ -181,6 +194,7 @@ public class DialogGPS extends CordovaPlugin {
     private void changeTextDirection(Builder dlg){
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         dlg.create();
+        isShown = true;
         AlertDialog dialog =  dlg.show();
         if (currentapiVersion >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
             TextView messageview = (TextView)dialog.findViewById(android.R.id.message);
