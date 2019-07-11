@@ -1,0 +1,24 @@
+{
+"name": "cl.rmd.cordova.dialoggps",
+"version": "0.0.2",
+"description": "",
+"cordova": {
+"id": "cl.rmd.cordova.dialoggps",
+"platforms": [
+"android"
+]
+},
+"repository": {
+"type": "git",
+"url": "https://github.com/rodrigo-martinezd/cordova-dialog-gps.git"
+},
+"keywords": [
+"ecosystem:cordova",
+"cordova-ios",
+"dialog",
+"gps"
+],
+"author": "rodrigo-martinezd",
+"license": "ISC",
+"homepage": "https://github.com/rodrigo-martinezd/cordova-dialog-gps/blob/master/README.md"
+}
